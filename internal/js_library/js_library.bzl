@@ -222,6 +222,10 @@ def _impl(ctx):
         ),
     ]
 
+    # TODO: `--config debug` shows tha linking `yargs-parser` has no
+    # `LinkablePackageInfo`. Probably because
+    # `@npm//yargs:yargs__nested_node_modules` is a `filegroup()` and not a
+    # `js_library()`?
     if ctx.attr.package_name:
         path = "/".join([p for p in [ctx.bin_dir.path, ctx.label.workspace_root, ctx.label.package] if p])
         providers.append(LinkablePackageInfo(

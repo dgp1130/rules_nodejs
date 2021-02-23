@@ -1,0 +1,18 @@
+load("//packages/jasmine:index.bzl", "jasmine_node_test")
+load("//packages/typescript:index.bzl", "ts_library", "ts_project")
+
+ts_library(
+    name = "yargs_test_lib",
+    srcs = ["yargs_test.ts"],
+    # Move this to `jasmine_node_test()` to fix the test.
+    data = ["@npm//yargs"],
+    deps = [
+        "@npm//@types/jasmine",
+        "@npm//@types/yargs",
+    ],
+)
+
+jasmine_node_test(
+    name = "yargs_test",
+    deps = [":yargs_test_lib"],
+)

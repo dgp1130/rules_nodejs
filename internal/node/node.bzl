@@ -314,23 +314,27 @@ fi
     if ctx.file.entry_point.extension == "js":
         runfiles.append(ctx.file.entry_point)
 
+    rf = ctx.runfiles(
+        transitive_files = depset(runfiles),
+        files = node_tool_files + [
+                    ctx.outputs.loader_script,
+                    ctx.outputs.require_patch_script,
+                ] + ctx.files._source_map_support_files +
+
+                # We need this call to the list of Files.
+                # Calling the .to_list() method may have some perfs hits,
+                # so we should be running this method only once per rule.
+                # see: https://docs.bazel.build/versions/master/skylark/depsets.html#performance
+                node_modules.to_list() + sources.to_list(),
+        collect_data = True,
+    )
+    for data in ctx.attr.data:
+        rf = rf.merge(data[DefaultInfo].default_runfiles)
+
     return [
         DefaultInfo(
             executable = executable,
-            runfiles = ctx.runfiles(
-                transitive_files = depset(runfiles),
-                files = node_tool_files + [
-                            ctx.outputs.loader_script,
-                            ctx.outputs.require_patch_script,
-                        ] + ctx.files._source_map_support_files +
-
-                        # We need this call to the list of Files.
-                        # Calling the .to_list() method may have some perfs hits,
-                        # so we should be running this method only once per rule.
-                        # see: https://docs.bazel.build/versions/master/skylark/depsets.html#performance
-                        node_modules.to_list() + sources.to_list(),
-                collect_data = True,
-            ),
+            runfiles = rf,
         ),
         # TODO(alexeagle): remove sources and node_modules from the runfiles
         # when downstream usage is ready to rely on linker

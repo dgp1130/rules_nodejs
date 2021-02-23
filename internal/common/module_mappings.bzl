@@ -33,7 +33,7 @@ def _get_deps(attrs, names):
 
 # Traverse 'srcs' in addition so that we can go across a genrule
 _MODULE_MAPPINGS_DEPS_NAMES = (
-    ["deps", "srcs"]
+    ["deps", "srcs", "data"]
 )
 
 def _debug(vars, *args):

@@ -457,6 +457,7 @@ def compile_ts(
                     # Note: don't include files=... here, or they will *always* be built
                     # by any dependent rule, regardless of whether it needs them.
                     # But these attributes are needed to pass along any input runfiles:
+                    transitive_files = depset(ctx.files.data, transitive = files_depsets),
                     collect_default = True,
                     collect_data = True,
                 ),
